@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>U.S. States</title>
+    <script type="text/javascript" src="d3.min.js"></script>
+    <script type="text/javascript" src="d3.geo.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="neoflow.css"/>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+// The radius scale for the centroids.
+var r = d3.scale.sqrt()
+    .domain([0, 1e6])
+    .range([0, 10]);
+
+// Our projection.
+var xy = d3.geo.albersUsa();
+
+var svg = d3.select("body").append("svg");
+svg.append("g").attr("id", "states");
+svg.append("g").attr("id", "state-centroids");
+
+d3.json("us-states.json", function(collection) {
+  svg.select("#states")
+    .selectAll("path")
+      .data(collection.features)
+    .enter().append("path")
+      .attr("d", d3.geo.path().projection(xy));
+});
+
+d3.json("us-state-centroids.json", function(collection) {
+  svg.select("#state-centroids")
+    .selectAll("circle")
+      .data(collection.features
+      .sort(function(a, b) { return b.properties.population - a.properties.population; }))
+    .enter().append("circle")
+      .attr("transform", function(d) { return "translate(" + xy(d.geometry.coordinates) + ")"; })
+      .attr("r", 0)
+    .transition()
+      .duration(1000)
+      .delay(function(d, i) { return i * 50; })
+      .attr("r", function(d) { return r(d.properties.population); });
+});
+
+    </script>
+  </body>
+</html>
