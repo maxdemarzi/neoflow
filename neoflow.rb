@@ -32,10 +32,12 @@ end
   
 def max_flow
   neo = Neography::Rest.new
-  neo.execute_script("source = g.idx('states_index')[[name:'California']]; 
-                      sink = g.idx('states_index')[[name:'Illinois']];
+  neo.execute_script("source = g.idx('states_index')[[name:'California']].iterator().next(); 
+                      sink = g.idx('states_index')[[name:'Illinois']].iterator().next();
                       
                       max_flow = 0;
+                      g.setMaxBufferSize(0);
+                      g.startTransaction();
                        
                       source.outE.inV.loop(2){
                         !it.object.equals(sink)}.
@@ -46,6 +48,7 @@ def max_flow
                           it.capacity}.each{
                             it.capacity -= flow}
                             };
+                      g.stopTransaction(TransactionalGraph.Conclusion.FAILURE); 
                             
                       max_flow;")
 end  
