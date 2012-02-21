@@ -1,0 +1,23 @@
+=== Description
+
+Finding the Max Flow of a network using Gremlin and Neo4j. 
+
+=== How To
+
+Follow along on {Max Flow with Gremlin and Transactions}[http://wp.me/p26jdv-7f]
+
+  git clone git@github.com:maxdemarzi/neoflow.git
+  cd neoflow
+  bundle install
+  neo4j:install
+  neo4j:start
+  neo4j:create
+  rackup
+  
+Then visit http://localhost:9292/index.html to see the example.
+
+=== Links
+
+* {Neo4j Community}[http://neo4j.org]
+* {D3.js}[http://mbostock.github.com/d3/]
+* {Max De Marzi}[http://maxdemarzi.com]

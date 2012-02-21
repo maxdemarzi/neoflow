@@ -3,9 +3,6 @@ require 'neography'
 require 'sinatra'
 require 'uri'
 
-require 'net-http-spy'
-Net::HTTP.http_logger_options = {:verbose => true} # see everything
-
 def create_graph
   neo = Neography::Rest.new
   graph_exists = neo.get_node_properties(1)

@@ -13,3 +13,8 @@ svg {
   fill: steelblue;
   fill-opacity: .8;
 }
+
+#citypath {
+  stroke: #c00;
+  stroke-width: 3px;
+}

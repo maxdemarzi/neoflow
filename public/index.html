@@ -1,15 +1,140 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>Neo4j Force Collapsible Example</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>U.S. States</title>
     <script type="text/javascript" src="d3.min.js"></script>
-    <script type="text/javascript" src="d3.geom.min.js"></script>
-    <script type="text/javascript" src="d3.layout.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="network.css"/>
+    <script type="text/javascript" src="d3.geo.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="neoflow.css"/>
   </head>
   <body>
-  	<div id="chart"></div>
-    <script type="text/javascript" src="network.js"></script>
+    <script type="text/javascript">
+
+// The radius scale for the centroids.
+var r = d3.scale.sqrt()
+    .domain([0, 1e6])
+    .range([0, 10]);
+
+// Our projection.
+var xy = d3.geo.albersUsa();
+
+var svg = d3.select("body").append("svg");
+svg.append("g").attr("id", "states");
+svg.append("g").attr("id", "state-centroids");
+
+d3.json("us-states.json", function(collection) {
+  svg.select("#states")
+    .selectAll("path")
+      .data(collection.features)
+    .enter().append("path")
+      .attr("d", d3.geo.path().projection(xy));
+});
+
+d3.json("us-state-centroids.json", function(collection) {
+  svg.select("#state-centroids")
+    .selectAll("circle")
+      .data(collection.features
+      .sort(function(a, b) { return b.properties.population - a.properties.population; }))
+    .enter().append("circle")
+      .attr("id", function(d) { return "state_" + d.id; })
+      .attr("transform", function(d) { return "translate(" + xy(d.geometry.coordinates) + ")"; })
+      .attr("r", 0)
+    .transition()
+      .duration(1000)
+      .delay(function(d, i) { return i * 50; })
+      .attr("r", 5);
+});
+
+svg.append("text")
+    .attr("transform", function() { return "translate(" + xy([-119.355165,35.458606]) + ")"; })
+    .attr("dy", ".35em")
+    .attr("dx", "-.45em")
+    .attr("text-anchor", "end")
+    .text("Source");
+
+svg.append("text")
+    .attr("transform", function() { return "translate(" + xy([-88.380238,41.278216]) + ")"; })
+    .attr("dy", ".35em")
+    .attr("dx", ".45em")
+    .attr("text-anchor", "start")
+    .text("Sink");
+
+svg.append("text")
+    .attr("transform", function() { return "translate(" + xy([ -97.388631,30.943149]) + ")"; })
+    .attr("dy", ".35em")
+    .attr("dx", ".45em")
+    .attr("text-anchor", "start")
+    .text("Node");
+
+// Source to Node
+svg.append("text")
+    .attr("transform", function() { return "translate(" + xy([-113,32]) + ")"; })
+    .attr("dy", ".35em")
+    .attr("dx", ".45em")
+    .attr("text-anchor", "start")
+    .text("Capacity: 1");
+
+// Node to Sync
+svg.append("text")
+    .attr("transform", function() { return "translate(" + xy([-93,36]) + ")"; })
+    .attr("dy", ".35em")
+    .attr("dx", ".45em")
+    .attr("text-anchor", "start")
+    .text("Capacity: 3");
+
+
+// Source to Node
+svg.append("text")
+    .attr("transform", function() { return "translate(" + xy([-113,42]) + ")"; })
+    .attr("dy", ".35em")
+    .attr("dx", ".45em")
+    .attr("text-anchor", "start")
+    .text("Capacity: 1");
+
+// Source to Node
+svg.append("text")
+    .attr("transform", function() { return "translate(" + xy([-113,37]) + ")"; })
+    .attr("dy", ".35em")
+    .attr("dx", ".45em")
+    .attr("text-anchor", "start")
+    .text("Capacity: 2");
+
+
+
+svg.append("svg:path")
+            .attr("d","M" + xy([-119.355165,35.458606])  + " L" + xy([-97.388631,30.943149]))
+            .style("stroke-width", 2)
+            .style("stroke", "steelblue")
+            .style("fill", "none");
+
+svg.append("svg:path")
+            .attr("d","M" + xy([-119.355165,35.458606])  + " L" + xy([-88.380238,41.278216]))
+            .style("stroke-width", 2)
+            .style("stroke", "steelblue")
+            .style("fill", "none");
+
+svg.append("svg:path")
+            .attr("d","M" + xy([-119.355165,35.458606])  + " S" + xy([-110,45]) + " " + xy([-88.380238,41.278216]))
+            .style("stroke-width", 2)
+            .style("stroke", "steelblue")
+            .style("fill", "none");
+
+svg.append("svg:path")
+            .attr("d","M" + xy([ -97.388631,30.943149])  + " L" + xy([-88.380238,41.278216]))
+            .style("stroke-width", 2)
+            .style("stroke", "steelblue")
+            .style("fill", "none");
+
+// Max Flow
+svg.append("text")
+    .attr("x","0")
+    .attr("y","10")
+    .attr("dy", ".35em")
+    .attr("dx", ".45em")
+    .attr("text-anchor", "start")
+    .text("Max Flow: 4");
+
+
+    </script>
   </body>
 </html>
